@@ -9,8 +9,12 @@
 var amdLoader = require('amd-loader');
 
 function getTranslationKeys( transFile ) {
-    var content = require( process.cwd() + transFile );
-    return Object.keys( content );
+    var keys,
+        content = require( process.cwd() + transFile );
+    
+    keys = Object.keys( content );
+    console.log( "KEYS:", keys );
+    return keys;
 }
 
 function findKeys( template, keys ) {
@@ -24,6 +28,11 @@ function findKeys( template, keys ) {
         } else {
             remainingKeys.push( key );
         }
+    });
+
+    console.log({
+        remainingKeys: remainingKeys,
+        foundKeys: foundKeys
     });
 
     return {
