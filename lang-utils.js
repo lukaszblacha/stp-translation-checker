@@ -13,7 +13,7 @@ function getTranslationKeys( transFile ) {
         content = require( process.cwd() + transFile );
     
     keys = Object.keys( content );
-    console.log( "KEYS:", keys );
+    //console.log( "KEYS:", keys );
     return keys;
 }
 
@@ -30,10 +30,10 @@ function findKeys( template, keys ) {
         }
     });
 
-    console.log({
-        remainingKeys: remainingKeys,
-        foundKeys: foundKeys
-    });
+    //console.log({
+    //    remainingKeys: remainingKeys,
+    //    foundKeys: foundKeys
+    //});
 
     return {
         remainingKeys: remainingKeys,

@@ -10,7 +10,7 @@
 
 module.exports = function(grunt) {
 
-    var langUtils = require('./lang-utils.js');
+    var langUtils = require('../lang-utils.js');
     var glob = require('glob');
     var fs = require('fs');
 
