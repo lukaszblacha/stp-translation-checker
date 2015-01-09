@@ -1,7 +1,0 @@
-define("data/lang", [], function() {
-    var _dict = {
-        "singlequote with whitespace": 'some dummy translation',
-        "doublequote with whitespace": 'some dummy translation'
-    };
-    return _dict;
-});

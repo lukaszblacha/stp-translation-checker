@@ -6,30 +6,20 @@
 
 'use strict';
 
-var fs = require('fs'),
-    path = require('path');
+var amdLoader = require('amd-loader');
 
 function getTranslationKeys( transFile ) {
-    var regex = /\n\s*([^:]*):*/g,
-        langData;
-
-    fs.readFile( transFile, 'utf8', function( err, data ) {
-        if( err ) throw err;
-        langData = data.match( regex ).map( function( key ) {
-            return key.trim().replace( /^'|'$|^"|"$/gm, '' );
-        } );
-    } );
-    return langData;
+    var content = require( process.cwd() + transFile );
+    return Object.keys( content );
 }
 
 function findKeys( template, keys ) {
-    var regex = "translate\\s*\(\\s*['|\"]#['|\"]\\s*\)",
+    var regex = "translate\\s*\\(\\s*['|\"](#)['|\"]\\s*\\)",
         remainingKeys = [], foundKeys = [];
 
-    if( typeof keys === 'string' ) keys = getLangKeys( keys );
-
-    keys.forEach( function( idx, key ) {
-        if( new RegExp(regex.replace( '#', key ).test( template ) ) ) {
+    keys.forEach( function( key ) {
+        var reg = new RegExp( regex.replace( '#', key ), 'g' );
+        if( reg.test( template ) ) {
             foundKeys.push( key );
         } else {
             remainingKeys.push( key );
@@ -40,7 +30,7 @@ function findKeys( template, keys ) {
         remainingKeys: remainingKeys,
         foundKeys: foundKeys
     };
-};
+}
 
 module.exports = {
     findKeys: findKeys,

@@ -10,42 +10,50 @@
 
 module.exports = function(grunt) {
 
-  var langUtils = require('lang-utils.js');
+    var langUtils = require('./lang-utils.js');
+    var glob = require('glob');
+    var fs = require('fs');
 
-  // Please see the Grunt documentation for more information regarding task
-  // creation: http://gruntjs.com/creating-tasks
+    // Please see the Grunt documentation for more information regarding task
+    // creation: http://gruntjs.com/creating-tasks
 
-  grunt.registerMultiTask('stp_translation_checker', 'Checks translation files against templates and views. Then lists unused phrases', function() {
-    // Merge task-specific and/or target-specific options with these defaults.
-    var keys,
-        options = this.options({
-          transFile: 'public/js/data/lang.js'
-        });
+    grunt.registerMultiTask('stp_translation_checker',
+        'Checks translation files against templates and views. Then lists unused phrases',
+        function() {
+            // Merge task-specific and/or target-specific options with these defaults.
+            var keys,
+                options = this.options({
+                    transFile: 'public/js/data/lang.js'
+                }),
+                sourceFiles = [];
 
-      keys = langUtils.getTranslationKeys( options.transFile );
+            keys = langUtils.getTranslationKeys( options.transFile );
 
-    // Iterate over all specified file groups.
-    this.files.forEach(function(f) {
-      // Concat specified files.
-      var src = f.src.filter(function(filepath) {
-        // Warn on and remove invalid source files (if nonull was set).
-        if (!grunt.file.exists(filepath)) {
-          grunt.log.warn('Source file "' + filepath + '" not found.');
-          return false;
-        } else {
-          return true;
+            options.templates.forEach( function(tpl) {
+                sourceFiles = sourceFiles.concat(
+                    glob.sync( tpl, {
+                        dot: true,
+                        matchBase: true
+                    })
+                );
+            });
+            grunt.log.writeln( "Checking these files: \n", sourceFiles );
+
+            // Iterate over all specified file groups.
+            var src = sourceFiles.map( function( file ) {
+                return fs.readFileSync( file, { encoding: 'utf8', flag: 'r' } )
+            }).join( "\n" );
+
+            var result = langUtils.findKeys( src, keys );
+
+            if( result.remainingKeys.length ) {
+                result.remainingKeys.forEach( function( key ) {
+                    grunt.log.warn( 'Unused phrase "' + key + '"' );
+                });
+            } else {
+                grunt.log.writeln("OK. All translation phrases are currently in use.");
+            }
         }
-      }).map(function(filepath) {
-        // Read file source.
-        return grunt.file.read(filepath);
-      });
-
-      // Write the destination file.
-      // grunt.file.write( f.dest, src );
-
-      // Print a success message.
-      grunt.log.writeln('File "' + f.dest + '" created.');
-    });
-  });
+    );
 
 };

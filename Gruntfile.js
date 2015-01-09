@@ -23,34 +23,20 @@ module.exports = function(grunt) {
       }
     },
 
-    // Before generating any new files, remove any previously-created files.
-    clean: {
-      tests: ['tmp']
-    },
-
     // Configuration to be run (and then tested).
     stp_translation_checker: {
-      default_options: {
+      simple: {
         options: {
-        },
-        files: {
-          'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
+          transFile: '/test/fixtures/lang.js', // with leading /
+          templates: [ 'test/fixtures/simple.html' ] // without leading /
         }
       },
-      custom_options: {
+      complex: {
         options: {
-          separator: ': ',
-          punctuation: ' !!!'
-        },
-        files: {
-          'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123']
+          transFile: '/test/fixtures/lang.js',
+          templates: ['test/fixtures/complex.html']
         }
       }
-    },
-
-    // Unit tests.
-    nodeunit: {
-      tests: ['test/*_test.js']
     }
 
   });
@@ -65,7 +51,7 @@ module.exports = function(grunt) {
 
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.
-  grunt.registerTask('test', ['clean', 'stp_translation_checker', 'nodeunit']);
+  grunt.registerTask('test', ['stp_translation_checker', 'nodeunit']);
 
   // By default, lint and run all tests.
   grunt.registerTask('default', ['jshint', 'test']);

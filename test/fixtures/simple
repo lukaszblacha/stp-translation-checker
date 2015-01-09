@@ -1,8 +1,0 @@
-define("data/lang", [], function() {
-    var _dict = {
-        test: 'some dummy translation',
-        'singlequote': 'some dummy translation',
-        "doublequote": 'some dummy translation',
-    };
-    return _dict;
-});
